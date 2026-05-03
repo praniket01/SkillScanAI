@@ -1,4 +1,5 @@
 import React, { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router';
 import FileUploader from '~/components/FileUploader';
 import Navbar from '~/components/Navbar'
 import { prepareInstructions } from '~/constants';
@@ -10,6 +11,7 @@ const upload = () => {
     const { auth , kv, fs , ai, isLoading } = usePuterStore();
     const [isProcessing, setIsProcessing] = useState(false);
     const [statusText,setStatusText] = useState('');
+    const navigate = useNavigate();
     const [file,setFile] = useState<File | null>(null);
 
     const handleFileSelect = (file : File | null) => {
@@ -36,7 +38,7 @@ const upload = () => {
         const data = {
             id : uuid,
             resumePath : uploadedFile.path,
-            imagePath : uploadedFile.path,
+            imagePath : uploadImage.name,
             companyName , jobDescription, jobTitle,
             feedback : '',
         }
@@ -57,9 +59,10 @@ const upload = () => {
         feedback.message.content[0].text;
 
         data.feedback = JSON.parse(feedbackText);
-        await kv.set(`resusme:${uuid}`, JSON.stringify(data));
+        await kv.set(`resume:${uuid}`, JSON.stringify(data));
         setStatusText('Aalyze complete, redirecting...');
         console.log(data);
+        navigate(`/resume/${uuid}`);
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

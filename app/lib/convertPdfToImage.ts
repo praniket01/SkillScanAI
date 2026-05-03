@@ -32,14 +32,14 @@ export async function convertPdfToImage(
     file: File
 ): Promise<PdfConversionResult> {
     try {
-        console.log('inside convdrt pdf function')
+        
         const lib = await loadPdfJs();
 
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await lib.getDocument({ data: arrayBuffer }).promise;
         const page = await pdf.getPage(1);
 
-        const viewport = page.getViewport({ scale: 4 });
+        const viewport = page.getViewport({ scale: 1.5 });
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
 
@@ -52,7 +52,7 @@ export async function convertPdfToImage(
         }
 
         await page.render({ canvasContext: context!, viewport }).promise;
-        console.log('Before page renderer')
+        
         return new Promise((resolve) => {
             canvas.toBlob(
                 (blob) => {
